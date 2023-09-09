@@ -163,7 +163,7 @@ app.get('/signup', (req, res) => {
 
 // create listing
 app.get('/create-listing', requireLogin, (req, res) => {
-    res.render('create-listing', {title: 'Create Listing'});
+    res.render('create-listing', {title: 'Create Listing', errorMessage: req.flash('errorMessage'), successMessage: req.flash('successMessage') });
 });
 
 app.get('/listings', async (req, res) => {
@@ -222,46 +222,52 @@ app.get('/listings', async (req, res) => {
   }
 });
 
-  
-  
-
-// all listings POST
 app.post('/listings', requireLogin, upload.array('photos', 10), async (req, res) => {
-    // Create a new listing to get the listingId (You might already have this logic
-    const tempListing = new Listing({
-        ...req.body,
-        createdBy: req.session.user.username  // Set createdBy to the username of the logged-in user
-    });
-    await tempListing.save();
-    const listingId = tempListing._id;
+  // Check the file types
+  const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+  for (let i = 0; i < req.files.length; i++) {
+      if (!allowedMimeTypes.includes(req.files[i].mimetype)) {
+        req.flash('errorMessage', 'Only JPEG, PNG, and JPG files are supported.');
+        return res.redirect('/create-listing'); 
+      }
+  }
 
-    const uploadPromises = req.files.map((file) => {
-        return new Promise((resolve, reject) => {
-            uploadToS3(file, listingId, (err, url) => {  // Pass listingId here
-                if (err) return reject(err);
-                return resolve(url);
-            });
-        });
-    });
+  const tempListing = new Listing({
+      ...req.body,
+      createdBy: req.session.user.username  // Set createdBy to the username of the logged-in user
+  });
+  await tempListing.save();
+  const listingId = tempListing._id;
 
-    try {
-        const photos = await Promise.all(uploadPromises);
+  const uploadPromises = req.files.map((file) => {
+      return new Promise((resolve, reject) => {
+          uploadToS3(file, listingId, (err, url) => {  // Pass listingId here
+              if (err) return reject(err);
+              return resolve(url);
+          });
+      });
+  });
 
-        // Update MongoDB with the photos URLs
-        const newListingData = {
-            ...req.body,
-            photos  // Add the photos URLs
-        };
+  try {
+      const photos = await Promise.all(uploadPromises);
 
-        await Listing.findByIdAndUpdate(listingId, newListingData);  // Update the existing listing
+      // Update MongoDB with the photos URLs
+      const newListingData = {
+          ...req.body,
+          photos  // Add the photos URLs
+      };
 
-        console.log('New listing added');
-        res.redirect('/');
-    } catch (err) {
-        console.log(err);
-        res.status(500).send('An error occurred');
-    }
+      await Listing.findByIdAndUpdate(listingId, newListingData);  // Update the existing listing
+
+      console.log('New listing added');
+      req.flash('successMessage', 'New listing added');
+      res.redirect(`/listing/${listingId}`);
+  } catch (err) {
+      console.log(err);
+      res.status(500).send('An error occurred');
+  }
 });
+
 
 // login 
 app.post('/login', async (req, res) => {
