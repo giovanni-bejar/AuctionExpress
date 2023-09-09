@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include ('./partials/head.ejs') %>
+<body class="bg-gray-900 text-white">
+    <!-- Include Navigation Bar -->
+    <%- include('./partials/nav.ejs') %>
+
+    <div class="container mx-auto px-4 py-16">
+        <!-- Listing Details -->
+        <div class="bg-gray-800 rounded-lg shadow-lg p-8 w-full md:w-2/3 lg:w-1/2 mx-auto">
+            <h1 class="text-4xl mb-4 text-center font-semibold">Listing Details</h1>
+            
+            <div class="flex flex-wrap -mx-2">
+                <div class="w-full md:w-1/2 px-2 mb-4">
+                    <label class="block text-gray-400 text-sm font-semibold mb-2" for="year">
+                        Year:
+                    </label>
+                    <p class="text-lg text-white"><%= listing.year %></p>
+                </div>
+                
+                <div class="w-full md:w-1/2 px-2 mb-4">
+                    <label class="block text-gray-400 text-sm font-semibold mb-2" for="make">
+                        Make:
+                    </label>
+                    <p class="text-lg text-white"><%= listing.make %></p>
+                </div>
+
+                <div class="w-full md:w-1/2 px-2 mb-4">
+                    <label class="block text-gray-400 text-sm font-semibold mb-2" for="model">
+                        Model:
+                    </label>
+                    <p class="text-lg text-white"><%= listing.model %></p>
+                </div>
+
+                <div class="w-full md:w-1/2 px-2 mb-4">
+                    <label class="block text-gray-400 text-sm font-semibold mb-2" for="color">
+                        Color:
+                    </label>
+                    <p class="text-lg text-white"><%= listing.color %></p>
+                </div>
+
+                <div class="w-full md:w-1/2 px-2 mb-4">
+                    <label class="block text-gray-400 text-sm font-semibold mb-2" for="mileage">
+                        Mileage:
+                    </label>
+                    <p class="text-lg text-white"><%= listing.mileage %></p>
+                </div>
+
+                <div class="w-full md:w-1/2 px-2 mb-4">
+                    <label class="block text-gray-400 text-sm font-semibold mb-2" for="accidents">
+                        Accidents:
+                    </label>
+                    <p class="text-lg text-white"><%= listing.accidents ? 'Yes' : 'No' %></p>
+                </div>
+
+                <div class="w-full px-2 mb-4">
+                    <label class="block text-gray-400 text-sm font-semibold mb-2" for="price">
+                        Price:
+                    </label>
+                    <p class="text-lg text-white"><%= listing.price %></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include ('./partials/footer.ejs') %> 
+</body>
+</html>

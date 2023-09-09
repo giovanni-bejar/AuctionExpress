@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: -5px;
+            z-index: 9999; 
+        }
+    </style>
+    <base href="/">
+    <link rel="stylesheet" href="/styles/tailwind.css">
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+    </script>
+</head>
+<body>
+    <nav class="bg-white p-4 flex items-center justify-between shadow-md sticky top-0 z-[1000]">
+        <!-- Logo on the left -->
+        <div class="flex items-center">
+            <a href="/">
+                <img src="logo.png" class="max-h-[200px] max-w-[250px] object-contain ml-14">
+            </a>
+        </div>
+
+        <!-- Desktop Layout -->
+        <div class="hidden md:flex items-center relative">
+            <% if (user) { %>
+                <!-- Display userBuyingPower -->
+                <a href="/add-funds">
+                    <div class="mr-4 bg-blue-500 text-white p-2 rounded cursor-pointer">
+                        Available Credit: $<%= user.userBuyingPower %>
+                    </div>
+                </a>
+                
+                <a href="/create-listing" class="mr-4 text-blue-500 hover:text-blue-700 transition duration-300 ease-in-out">
+                    Create Listing
+                </a>
+                
+                <div class="mr-4">
+                    <a href="/listings" class="text-blue-500 hover:text-blue-700 p-2 bg-white hover:bg-gray-200 rounded transition duration-300 ease-in-out">
+                        Listings
+                    </a>
+                </div>
+
+                <div class="dropdown relative inline-block">
+                    <img src="user.png" alt="User Account" style="max-height: 30px; max-width: 250px; margin-right: 56px;" class="cursor-pointer">
+                    <div class="dropdown-content absolute right-0 mt-8 p-2 w-48 bg-white rounded-md shadow-xl hidden">
+                        <a href="/account-settings" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Account Settings</a>
+                        <a href="/user-listings" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">My Listings</a>
+                        <a href="/my-bids" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">My Bids</a>
+                        <a href="/my-purchases" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">My Purchases</a>
+                        <a href="/logout" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Logout</a>
+                    </div>
+                </div>
+            <% } else { %>
+                <a href="/login" class="mr-4">
+                    <img src="user.png" alt="User Account" class="max-h-[30px] max-w-[250px] mr-14">
+                </a>
+            <% } %>
+        </div>
+
+        <!-- Mobile Layout -->
+        <div class="md:hidden flex items-center">
+            <% if (user) { %>
+                <button onclick="toggleMobileMenu()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            <% } else { %>
+                <a href="/login">
+                    <img src="user.png" alt="User Account" class="max-h-[30px] max-w-[250px]">
+                </a>
+            <% } %>
+        </div>
+
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden absolute right-0 top-16 bg-white p-4 rounded shadow-lg">
+            <% if (user) { %>
+                <a href="/add-funds" class="block bg-blue-500 text-white p-2 rounded mb-2">
+                    Available Credit: $<%= user.userBuyingPower %>
+                </a>
+                <a href="/create-listing" class="block text-blue-500 hover:text-blue-700 p-2 rounded hover:bg-gray-200 mb-2">
+                    Create Listing
+                </a>
+                <a href="/listings" class="block text-blue-500 hover:text-blue-700 p-2 rounded hover:bg-gray-200 mb-2">
+                    Listings
+                </a>
+                <a href="/account-settings" class="block text-gray-700 hover:bg-gray-200 p-2 rounded mb-2">
+                    Account Settings
+                </a>
+                <a href="/user-listings" class="block text-gray-700 hover:bg-gray-200 p-2 rounded mb-2">
+                    My Listings
+                </a>
+                <a href="/my-bids" class="block text-gray-700 hover:bg-gray-200 p-2 rounded mb-2">
+                    My Bids
+                </a>
+                <a href="/my-purchases" class="block text-gray-700 hover:bg-gray-200 p-2 rounded mb-2">
+                    My Purchases
+                </a>
+                <a href="/logout" class="block text-gray-700 hover:bg-gray-200 p-2 rounded mb-2">
+                    Logout
+                </a>
+            <% } %>
+        </div>
+    </nav>
+</body>
+</html>

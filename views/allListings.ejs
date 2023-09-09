@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <!-- Include the head -->
+  <%- include ('./partials/head.ejs') %>
+
+  <body class="bg-gray-100 h-screen">
+    
+    <!-- Include the navbar -->
+    <%- include ('./partials/nav.ejs') %>
+
+    <div class="container mx-auto mt-10">
+      <div class="flex justify-between items-center">
+        <h1 class="text-4xl font-semibold mb-5">All Listings</h1>
+        <button id="openFilterModal" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Filters</button>
+      </div>
+
+      <!-- Filter Modal -->
+    <div id="filterModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 hidden flex justify-center items-center">
+      <div class="bg-white p-6 rounded-lg w-full md:w-1/2">
+          <h2 class="text-2xl mb-4">Filters</h2>
+          <form id="filterForm">
+              <!-- Year Range -->
+              <div class="mb-4">
+                  <label class="block text-gray-700 mb-2">Year Range</label>
+                  <input type="number" name="minYear" placeholder="Min Year" class="p-2 border rounded mb-2">
+                  <input type="number" name="maxYear" placeholder="Max Year" class="p-2 border rounded">
+              </div>
+
+            <!-- Accidents -->
+            <div class="mb-4">
+              <label class="block text-gray-700 mb-2">Accidents</label>
+              <select name="accidents" class="p-2 border rounded">
+                <option value="">Any</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+
+            <!-- Buy It Now Price Range -->
+            <div class="mb-4">
+              <label class="block text-gray-700 mb-2">Buy It Now Price Range</label>
+              <input type="number" name="minPrice" placeholder="Min Price" class="p-2 border rounded mb-2">
+              <input type="number" name="maxPrice" placeholder="Max Price" class="p-2 border rounded">
+            </div>
+
+            <!-- Color -->
+            <div class="mb-4">
+              <label class="block text-gray-700 mb-2">Color</label>
+              <input type="text" name="color" placeholder="Color" class="p-2 border rounded">
+            </div>
+
+            <!-- Mileage Range -->
+            <div class="mb-4">
+              <label class="block text-gray-700 mb-2">Mileage Range</label>
+              <input type="number" name="minMileage" placeholder="Min Mileage" class="p-2 border rounded mb-2">
+              <input type="number" name="maxMileage" placeholder="Max Mileage" class="p-2 border rounded">
+            </div>
+
+            <!-- Buttons -->
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 mr-2">Update</button>
+            <button id="closeFilterModal" type="button" class="bg-red-500 text-white p-2 rounded hover:bg-red-600">Close</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Listings -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-2">
+        <% listing.forEach(item => { %>
+          <div class="bg-white rounded-lg p-6 shadow-md hover:shadow-lg">
+            <!-- Display the first image -->
+            <img src="<%= item.photos[0] %>" alt="Listing Image" class="h-50 w-full object-cover rounded mb-4">
+            
+            <!-- Display other details -->
+            <h2 class="text-2xl font-semibold mb-2"><%= item.year %> <%= item.make %> <%= item.model %></h2>
+            <p class="text-gray-700 mb-2">Color: <%= item.color %></p>
+            <p class="text-gray-700 mb-2">Mileage: <%= item.mileage %></p>
+            <p class="text-gray-700 mb-2">Accidents: <%= item.accidents ? 'Yes' : 'No' %></p>
+            <p class="text-gray-700 mb-2">Buy It Now Price: $<%= item.price %></p>
+            
+            <!-- Buttons or links -->
+            <a href="listing/<%= item._id %>" class="text-blue-500">View Details</a>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <script>
+      const filterModal = document.getElementById('filterModal');
+      const filterForm = document.getElementById('filterForm');
+
+      // Open the modal
+      document.getElementById('openFilterModal').addEventListener('click', () => {
+        filterModal.classList.remove('hidden');
+      });
+
+      // Close the modal
+      document.getElementById('closeFilterModal').addEventListener('click', () => {
+        filterModal.classList.add('hidden');
+      });
+
+      // Handle form submission
+      filterForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(filterForm);
+        
+        // Construct filter object based on form data
+        const filters = {};
+        formData.forEach((value, key) => {
+          if (value) {
+            filters[key] = value;
+          }
+        });
+
+        // Convert object to query string
+        const queryString = new URLSearchParams(filters).toString();
+
+        // Navigate to the new URL
+        window.location.href = `/listings?${queryString}`;
+      });
+    </script>
+  </body>
+</html>

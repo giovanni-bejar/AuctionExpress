@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include ('./partials/head.ejs') %>
+    <link rel="stylesheet" href="/styles/tailwind.css">
+<body class="bg-white h-screen flex justify-center items-start pt-16">
+
+    <div class="w-1/4 mx-auto overflow-hidden">
+        <div class="flex flex-col p-8">
+            <h3 class="text-3xl font-semibold text-black mb-6">Create New Listing</h3>
+
+            
+
+            <form action="/listings" method="POST" enctype="multipart/form-data" class="w-full mt-4 space-y-6">
+                <div class="flex flex-col">
+                    <label for="year" class="text-base text-black font-semibold">Year</label>
+                    <input type="number" name="year" id="year" required class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                </div>
+                <div class="flex flex-col">
+                    <label for="make" class="text-base text-black font-semibold">Make</label>
+                    <input type="text" name="make" id="make" required class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                </div>
+                <div class="flex flex-col">
+                    <label for="model" class="text-base text-black font-semibold">Model</label>
+                    <input type="text" name="model" id="model" required class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                </div>
+                <div class="flex flex-col">
+                    <label for="color" class="text-base text-black font-semibold">Color</label>
+                    <input type="text" name="color" id="color" required class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                </div>
+                <div class="flex flex-col">
+                    <label for="mileage" class="text-base text-black font-semibold">Mileage</label>
+                    <input type="number" name="mileage" id="mileage" required class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                </div>
+                <div class="flex flex-col">
+                    <label class="text-base text-black font-semibold">Accidents</label>
+                    <div class="flex items-center space-x-4">
+                        <input type="radio" name="accidents" id="accidents-yes" value="true" required class="text-blue-400">
+                        <label for="accidents-yes" class="text-black">Yes</label>
+                        <input type="radio" name="accidents" id="accidents-no" value="false" required class="text-blue-400">
+                        <label for="accidents-no" class="text-black">No</label>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <label for="price" class="text-base text-black font-semibold">Price</label>
+                    <input type="number" name="price" id="price" required class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                </div>
+                <div class="flex flex-col">
+                    <label for="photos" class="text-base text-black font-semibold">Photos</label>
+                    <input type="file" name="photos" id="photos" multiple required class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+                </div>
+                <div class="flex justify-center">
+                    <button type="submit" class="w-full p-2 rounded bg-blue-300 text-white focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50 cursor-not-allowed opacity-50" disabled id="submitBtn">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Get all input fields and the submit button
+        const allInputs = document.querySelectorAll('input');
+        const submitBtn = document.getElementById('submitBtn');
+    
+        // Disable the submit button by default
+        submitBtn.disabled = true;
+        submitBtn.classList.add('cursor-not-allowed', 'opacity-50');
+    
+        // Function to check all fields
+        function checkAllFields() {
+            let allFilled = true;
+    
+            allInputs.forEach(input => {
+                if (!input.value) {
+                    allFilled = false;
+                }
+            });
+    
+            if (allFilled) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('cursor-not-allowed', 'opacity-50');
+                submitBtn.classList.add('bg-blue-400', 'hover:bg-blue-500', 'cursor-pointer', 'opacity-100');
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('cursor-not-allowed', 'opacity-50');
+                submitBtn.classList.remove('bg-blue-400', 'hover:bg-blue-500', 'cursor-pointer', 'opacity-100');
+            }
+        }
+    
+        // Add event listeners to all input fields
+        allInputs.forEach(input => {
+            input.addEventListener('input', checkAllFields);
+        });
+    </script>
+    
+
+</body>
+</html>

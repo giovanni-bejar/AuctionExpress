@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Funds</title>
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body class="bg-gray-100">
+
+  <%- include ('./partials/head.ejs') %>
+  <%- include('./partials/nav.ejs') %>
+
+  <div class="container mx-auto mt-10 flex flex-col items-center">
+    <h1 class="text-4xl mb-6">Add Funds</h1>
+
+    <!-- Display User's Available Credit -->
+    <div class="mb-6 text-2xl font-bold">
+      <span>Your Available Credit: $<%= user.userBuyingPower %></span>
+    </div>
+
+    <form id="payment-form" class="w-full max-w-md">
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="amount">
+          Amount to Add
+        </label>
+        <input type="number" name="amount" id="amount" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter Amount" required>
+      </div>
+
+      <div id="card-element" class="mb-4 p-4 bg-white shadow">
+        <!-- A Stripe Element will be inserted here. -->
+      </div>
+
+      <!-- Used to display form errors. -->
+      <div id="card-errors" role="alert" class="text-red-600"></div>
+
+      <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Submit Payment
+      </button>
+    </form>
+  </div>
+
+  <script>
+    var stripe = Stripe('pk_test_51NnmBXJaqnY0SMBSiupyG7TputuFYX6scdgDWsSNLIqV1p3NenKAwalzdynutGqSvXtBYqzAc5UnGnMYhRv6YbVE00sxNQhGpS'); // Replace with your Stripe public key
+    var elements = stripe.elements();
+    var card = elements.create('card');
+    card.mount('#card-element');
+  
+    var form = document.getElementById('payment-form');
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+  
+      stripe.createToken(card).then(function(result) {
+        if (result.error) {
+          document.getElementById('card-errors').textContent = result.error.message;
+        } else {
+          handleStripeToken(result.token);
+        }
+      });
+    });
+  
+    function handleStripeToken(token) {
+        const amountInput = document.getElementById("amount");
+        const amount = parseInt(amountInput.value, 10) || 0;
+    
+        console.log("Amount sent to server:", amount);  // Debugging line
+    
+        if (amount <= 0) {
+          alert('Please enter a valid amount.');
+          return;
+        }
+    
+        fetch('/payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ stripeToken: token.id, userId: '<%= user._id %>', amount }),
+        }).then(res => res.json()).then(data => {
+          if (data.success) {
+            alert('Payment was successful');
+          } else {
+            alert('Payment failed');
+          }
+        });
+      }
+    
+  </script>
+  
+  <%- include ('./partials/footer.ejs') %>
+
+</body>
+</html>
+

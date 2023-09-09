@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include ('./partials/head.ejs') %>
+  <link rel="stylesheet" href="/styles/tailwind.css">
+  <body class="bg-white h-screen flex justify-center items-start pt-16">
+    <div class="w-3/4 mx-auto overflow-hidden">
+      <div class="flex flex-row p-8">
+
+        <!-- Form Section -->
+        <div class="w-1/2 pl-4">
+          <h1 class="text-3xl font-semibold text-black mb-6">Edit Listing: <%= listing.year %> <%= listing.make %> <%= listing.model %></h1>
+
+          <form action="/update-listing/<%= listing._id %>" method="post" enctype="multipart/form-data" class="w-full mt-4 space-y-6">
+            <input type="hidden" name="deletedPhotos" id="deletedPhotos">
+            <!-- Year -->
+            <div class="flex flex-col">
+              <label for="year" class="text-base text-black font-semibold">Year</label>
+              <input type="number" name="year" id="year" value="<%= listing.year %>" required class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+            </div>
+
+            <!-- Make -->
+            <div class="flex flex-col">
+              <label for="make" class="text-base text-black font-semibold">Make</label>
+              <input type="text" name="make" id="make" value="<%= listing.make %>" required class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+            </div>
+
+            <!-- Model -->
+            <div class="flex flex-col">
+              <label for="model" class="text-base text-black font-semibold">Model</label>
+              <input type="text" name="model" id="model" value="<%= listing.model %>" required class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+            </div>
+
+            <!-- Color -->
+            <div class="flex flex-col">
+              <label for="color" class="text-base text-black font-semibold">Color</label>
+              <input type="text" name="color" id="color" value="<%= listing.color %>" required class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+            </div>
+
+            <!-- Mileage -->
+            <div class="flex flex-col">
+              <label for="mileage" class="text-base text-black font-semibold">Mileage</label>
+              <input type="number" name="mileage" id="mileage" value="<%= listing.mileage %>" required class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+            </div>
+
+            <!-- Accidents -->
+            <div class="flex flex-col">
+              <label class="text-base text-black font-semibold">Accidents</label>
+              <div>
+                <input type="radio" name="accidents" id="accidentsYes" value="true" <%= listing.accidents ? 'checked' : '' %> >
+                <label for="accidentsYes" class="mr-4">Yes</label>
+                <input type="radio" name="accidents" id="accidentsNo" value="false" <%= !listing.accidents ? 'checked' : '' %> >
+                <label for="accidentsNo">No</label>
+              </div>
+            </div>
+
+            <!-- Price -->
+            <div class="flex flex-col">
+              <label for="price" class="text-base text-black font-semibold">Price</label>
+              <input type="number" name="price" id="price" value="<%= listing.price %>" required class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+            </div>
+
+            <!-- Upload New Photos -->
+            <div class="flex flex-col">
+              <label for="newPhotos" class="text-base text-black font-semibold">Upload New Photos</label>
+              <input type="file" name="newPhotos" id="newPhotos" multiple class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+            </div>
+
+            <!-- Update and Delete Buttons -->
+            <div class="flex flex-col space-y-4">
+              <button type="submit" class="w-full p-2 rounded bg-blue-500 text-white focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50">
+                Update Listing
+              </button>
+
+              <% if (user && user.type === 'admin') { %>
+                <div class="flex justify-between mt-4 space-x-4">
+                  <!-- Approve Button -->
+                  <button id="approve-button" class="w-1/2 p-2 rounded bg-green-500 text-white focus:outline-none focus:ring-2 focus:ring-green-300 focus:ring-opacity-50">
+                    Approve Listing
+                  </button>
+              
+                  <!-- Delete Button -->
+                  <form action="/delete-listing/<%= listing._id %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this listing?')" class="w-1/2">
+                    <button type="submit" class="w-1/2 p-2 rounded bg-red-500 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
+                      Delete Listing
+                    </button>
+                  </form>
+                </div>
+              <% } %>
+            </div>
+
+          </form>
+        </div>
+        <!-- Photos Section -->
+        <div class="w-1/2 pr-4 pl-10">
+          <h1 class="text-2xl font-semibold text-black mb-6">Photos</h1>
+          <div class="existing-photos flex flex-wrap">
+            <% listing.photos.forEach((photo, index) => { %>
+              <div class="photo-container relative w-2/4 p-1">
+                <img src="<%= photo %>" alt="Photo <%= index + 1 %>" class="w-full h-auto object-cover">
+                <button type="button" class="delete-photo absolute top-0 right-0 bg-red-500 text-white w-4 h-4 text-xs" data-photo="<%= photo %>">X</button>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // JavaScript code for handling photo deletion
+      const deletedPhotos = [];
+      document.querySelectorAll('.delete-photo').forEach(button => {
+        button.addEventListener('click', function() {
+          const photoUrl = this.getAttribute('data-photo');
+          this.parentElement.remove();  // Remove the photo container
+          deletedPhotos.push(photoUrl); // Add the deleted photo's URL to the array
+          document.getElementById('deletedPhotos').value = JSON.stringify(deletedPhotos); // Update the hidden input
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,75 @@
+<%- include ('./partials/head.ejs') %>
+<%- include('./partials/nav.ejs') %>
+
+<body class="bg-white h-screen">
+  <div class="container mx-auto px-4 py-16">
+    <div class="rounded-lg shadow-lg p-8 w-full md:w-2/3 lg:w-1/2 mx-auto">
+      <h1 class="text-3xl font-semibold text-black mb-6 text-center">Account Settings</h1>
+
+      <form action="/account-settings" method="POST" class="w-full mt-4 space-y-6">
+        <div class="flex flex-col">
+          <label for="username" class="text-base text-black font-semibold">Username</label>
+          <input type="text" name="username" id="username" value="<%= user.username %>" required class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+        </div>
+
+        <div class="flex flex-col">
+          <label for="email" class="text-base text-black font-semibold">Email</label>
+          <input type="email" name="email" id="email" value="<%= user.email %>" required class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+        </div>
+
+        <div class="flex flex-col">
+          <label for="currentPassword" class="text-base text-black font-semibold">Current Password</label>
+          <input type="password" name="currentPassword" id="currentPassword" required class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+        </div>
+
+        <div class="flex flex-col">
+          <label for="newPassword" class="text-base text-black font-semibold">New Password</label>
+          <input type="password" name="newPassword" id="newPassword" class="p-2 rounded bg-gray-200 text-black w-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+        </div>
+
+        <div class="flex justify-center">
+          <button type="submit" class="w-full p-2 rounded bg-blue-300 text-white focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50">
+            Update
+          </button>
+        </div>
+      </form>
+
+      <div class="flex justify-center mt-6">
+        <form action="/account-settings/delete" method="POST" id="deleteAccountForm">
+          <button type="submit" 
+                  class="w-full p-2 rounded bg-red-500 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                  id="deleteButton"
+                  <% if (activeListings) { %> disabled <% } %>
+          >
+            Delete Account
+          </button>
+        </form>
+      </div>
+      <span id="warningMessage" class="text-red-600 hidden">
+        You cannot delete your account while you have active listings.
+      </span>
+
+      <script>
+        // JavaScript to add a confirmation dialog
+        document.getElementById('deleteAccountForm').addEventListener('submit', function(e) {
+          const confirmation = confirm('Are you sure you want to delete your account?');
+          if (!confirmation) {
+            e.preventDefault();
+          }
+        });
+
+        const deleteButton = document.getElementById("deleteButton");
+        const warningMessage = document.getElementById("warningMessage");
+        if (deleteButton.disabled) {
+          deleteButton.addEventListener("mouseover", function() {
+            warningMessage.classList.remove("hidden");
+          });
+          deleteButton.addEventListener("mouseout", function() {
+            warningMessage.classList.add("hidden");
+          });
+          deleteButton.style.cursor = "not-allowed";
+        }
+      </script>
+    </div>
+  </div>
+</body>

@@ -1,0 +1,39 @@
+<%- include ('./partials/head.ejs') %>
+<%- include('./partials/nav.ejs') %>
+
+<body class="bg-white h-screen">
+  <div class="container mx-auto px-4 py-16">
+    <h1 class="text-3xl font-semibold text-black mb-6 text-center">My Purchases</h1>
+
+    <% if (userPurchases.length === 0) { %>
+      <p class="text-center text-base text-black">Sorry, you haven't made any purchases.</p>
+    <% } else { %>
+      <% userPurchases.forEach(userPurchase => { %>
+        <div class="rounded-lg shadow-lg p-8 mb-6 bg-gray-200">
+          <div class="flex justify-between items-center">
+            <!-- Display the first image -->
+            <div class="flex-1">
+              <% if (userPurchase.listingId.photos && userPurchase.listingId.photos.length > 0) { %>
+                <img src="<%= userPurchase.listingId.photos[0] %>" alt="<%= userPurchase.listingId.make %> <%= userPurchase.listingId.model %>" class="w-54 h-36 object-cover">
+              <% } else { %>
+                <p>No photos available</p>
+              <% } %>
+            </div>
+
+            <!-- Display listing info -->
+            <div class="flex-1 flex justify-center items-center">
+                <h3 class="text-2xl font-semibold text-black mb-4"><%= userPurchase.listingId.year %> <%= userPurchase.listingId.make %> <%= userPurchase.listingId.model %></h3>
+            </div>
+
+            <!-- Display user purchase -->
+            <div class="flex-1 flex justify-center items-center">
+              <h3 class="text-2xl font-semibold text-black mb-4">Purchased for: $<%= userPurchase.purchaseValue %></h3>
+            </div>
+
+          </div>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+</body>
+<%- include ('./partials/footer.ejs') %> 

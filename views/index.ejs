@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link rel="stylesheet" href="/styles/tailwind.css">
+        <%- include ('./partials/head.ejs') %>
+    </head>
+    <body class="bg-gray-100">
+        <%- include ('./partials/nav.ejs') %>
+
+<!-- Full-width image with text overlay and gradient -->
+<div class="relative h-[550px] overflow-hidden">
+    <img src="wp.jpg" alt="Banner Image" class="w-full object-cover h-full">
+    <div class="absolute inset-0 bg-gradient-to-r from-black via-transparent to-transparent"></div>
+    <div class="absolute top-0 left-0 ml-6 mt-6 p-10 max-w-[750px]">
+        <p class="text-7xl font-semibold text-white mb-4">Bid on <%= totalNumberListings %>+ Used and Repairable Vehicles Nationwide!</p>
+        <!-- Buttons -->
+        <div class="home-content">
+            <div class="btns">
+                <a href="/listings"> <strong>All Listings</strong></a>
+            </div>
+        </div>
+    </div>              
+</div>
+
+<!-- Custom CSS -->
+<style>
+    .home-content .btns {
+        display: flex;
+        justify-content: space-between;
+        width: 330px;
+        height: 50px;
+        background: transparent;
+    }
+
+    .btns a {
+        margin-top: 15px;
+        position: relative;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        width: 150px;
+        height: 100%;
+        border: 1px solid rgb(43, 155, 253);
+        font-size: 20px;
+        letter-spacing: .75px;
+        color: rgb(43, 155, 253);
+        z-index: 1;
+        overflow: hidden;
+        background-color: transparent;
+    }
+
+    .btns a:nth-child(1) {
+        background-color: rgb(43, 155, 253);
+        color: aliceblue;
+    }
+
+    .btns a::before {
+        content: '';
+        position: absolute;
+        width: 0;
+        top: 0;
+        left: 0;
+        height: 100%;
+        background-color: rgb(27, 27, 27);
+        z-index: -1;
+        transition: .3s;
+    }
+
+    .btns a:hover::before {
+        width: 100%;
+    }
+</style>
+
+
+
+
+        <!-- How it Works Section -->
+        <div class="container mx-auto mt-6">
+            <h2 class="text-4xl font-semibold mb-10 text-center">How It Works</h2>
+            <div class="flex justify-around items-center">
+                <!-- Step 1: Create an Account -->
+                <div class="flex flex-col items-center">
+                    <div class="mb-4 p-4 rounded-full">
+                        <i class="fas fa-user-plus fa-3x"></i> <!-- Font Awesome Icon for Create an Account -->
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-2">Step 1</h3>
+                    <p>Create a free Account</p>
+                    <a href="/signup" class="bg-blue-500 text-white px-4 py-2 rounded mt-4">Sign Up</a>
+                </div>
+
+                <!-- Step 2: Add Funds -->
+                <div class="flex flex-col items-center">
+                    <div class="mb-4 p-4 rounded-full">
+                        <i class="fas fa-wallet fa-3x"></i> <!-- Font Awesome Icon for Add Funds -->
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-2">Step 2</h3>
+                    <p>Add Funds</p>
+                    <a href="/add-funds" class="bg-blue-500 text-white px-4 py-2 rounded mt-4">Add Funds</a>
+                </div>
+
+                <!-- Step 3: Start Bidding -->
+                <div class="flex flex-col items-center">
+                    <div class="mb-4 p-4 rounded-full">
+                        <i class="fas fa-gavel fa-3x"></i> <!-- Font Awesome Icon for Start Bidding -->
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-2">Step 3</h3>
+                    <p>Start Bidding</p>
+                    <a href="/listings" class="bg-blue-500 text-white px-4 py-2 rounded mt-4">View Listings</a>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Most Recent Listings -->
+        <div class="container mx-auto mt-10 mb-10 p-3">
+            <h2 class="text-4xl font-semibold mb-5">Most Recent Listings</h2>
+            <div id="recent-listings" class="flex overflow-hidden justify-center items-center">
+                <button id="prev" class="bg-blue-500 text-white py-1 px-2 rounded mr-4">←</button>
+                
+                <% if (listing && listing.length > 0) { %>
+                    <% listing.slice(0, 12).forEach((item, index) => { %>
+                        <div class="recent-item md:w-1/2 w-full p-0.5 hidden mx-1" data-index="<%= index %>">
+                            <a href="listing/<%= item._id %>" class="block">
+                                <div class="bg-white p-0 shadow-md hover:shadow-lg transition duration-500 ease-in-out transform hover:-translate-y-2 hover:scale-70 h-full">
+                                    <img src="<%= item.photos[0] %>" alt="Listing Image" class="h-[190px] w-full object-top mb-2">
+                                    <div class="flex flex-col h-1/2">
+                                        <div class="h-[3em] p-6">
+                                            <h3 class="text-xl font-bold mt-0 mb-1"><%= item.year %> <%= item.make %> <%= item.model %></h3>
+                                        </div>
+                                        <div class="p-6"> 
+                                            <p class="text-base mb-2 mt-2"><strong>Mileage: </strong> <%= item.mileage %></p>
+                                            <p class="text-base mb-2 mt-2"><strong>Highest Bid: </strong> $<%= item.highestBid %></p>
+                                            <p class="text-base mb-2 mt-2"><strong>Buy it Now: </strong> $<%= item.price %></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                    <% }) %>
+                <% } else { %>
+                    <p>There are no listings to display.</p>
+                <% } %>
+                
+                <button id="next" class="bg-blue-500 text-white py-1 px-2 rounded ml-4">→</button>
+            </div>
+        </div>
+
+        <script>
+            let currentIndex = 0;
+            const totalListings = document.querySelectorAll('.recent-item').length;
+            const itemsToShow = window.innerWidth <= 768 ? 1 : 4; // Show 1 item for small screens
+            
+            function showListings() {
+                const items = document.querySelectorAll('.recent-item');
+                items.forEach((item, index) => {
+                    item.classList.add('hidden');
+                    if (index >= currentIndex && index < currentIndex + itemsToShow) {
+                        item.classList.remove('hidden');
+                    }
+                });
+            }
+            
+            document.getElementById('prev').addEventListener('click', () => {
+                if (currentIndex > 0 && (currentIndex - 1 + itemsToShow) <= totalListings) {
+                    currentIndex -= 1;
+                }
+                showListings();
+            });
+            
+            document.getElementById('next').addEventListener('click', () => {
+                if ((currentIndex + 1 + itemsToShow) <= totalListings) {
+                    currentIndex += 1;
+                }
+                showListings();
+            });
+            
+            showListings();
+        </script>
+
+        <%- include ('./partials/footer.ejs') %> 
+    </body>
+</html>
