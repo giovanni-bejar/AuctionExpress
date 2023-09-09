@@ -14,8 +14,6 @@ const app = express();
 const AWS = require('aws-sdk');
 const upload = multer({ storage: multer.memoryStorage() });
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const https = require('https');
-const fs = require('fs');
 
 
 app.use(express.json());
@@ -60,19 +58,13 @@ function deleteFromS3(listingId, photoUrl, callback) {
     });
   }
 
-
-
-// Initialize the HTTPS server
-const httpsServer = https.createServer(app);
-
-
 // mongoDB 
 const dbURI = (process.env.dbURI)
 mongoose.connect(dbURI)
   .then((result) => {
     console.log('connected!');
-    httpsServer.listen(3000, () => {
-      console.log('HTTPS Server running on port 3000');
+    app.listen(3000, '0.0.0.0', () => {
+      console.log("App listening on port 3000");
     });
   })
   .catch((err) => {
