@@ -265,7 +265,8 @@ app.post('/listings', requireLogin, upload.array('photos', 10), async (req, res)
 
 // login 
 app.post('/login', async (req, res) => {
-    const { email, password } = req.body;
+    const { password } = req.body;
+    const email = req.body.email.toLowerCase();
 
     try {
         // Check if an account with the given email exists
@@ -293,7 +294,8 @@ app.post('/login', async (req, res) => {
 });
 
 app.post('/signup', async (req, res) => {
-    const { name, email, username, password } = req.body;
+    const { name, username, password } = req.body;
+    const email = req.body.email.toLowerCase();
 
     try {
         // Check if an account with the given email already exists
@@ -446,10 +448,12 @@ app.get('/edit-listing/:id', requireLogin, async (req, res) => {
   try {
       const listing = await Listing.findById(listingId);
 
-      if (listing.createdBy === currentUser || currentUser.type === "admin" ) {  // Check if the listing was created by the current user
+      if (listing.createdBy === currentUser || req.session.user.type === "admin" ) {  // Check if the listing was created by the current user
           res.render('edit-listing', { title: 'Edit Listing', listing: listing, user: req.session.user });
+          console.log(req.session.user.type);
       } else {
           res.status(403).send('Access Denied'); // 403 Forbidden
+          console.log(req.session.user.type);
       }
   } catch (err) {
       console.log(err);
@@ -617,9 +621,10 @@ app.post('/update-listing/:id', requireLogin, upload.array('newPhotos', 8), asyn
       const listing = await Listing.findById(listingId);
 
       // Check if the listing was created by the current user
-      if (listing.createdBy !== currentUser) {
-          return res.status(403).send('Access Denied'); // 403 Forbidden
-      }
+      if (listing.createdBy !== currentUser && req.session.user.type !== "admin") {
+        return res.status(403).send('Access Denied'); // 403 Forbidden
+    }
+    
 
       // Handle new photos
       const uploadPromises = req.files.map((file) => {
@@ -657,6 +662,23 @@ app.post('/update-listing/:id', requireLogin, upload.array('newPhotos', 8), asyn
       res.status(500).send('An error occurred');
   }
 });
+
+app.post('/approve-listing/:id', requireLogin, async (req, res) => {
+  const listingId = req.params.id;
+
+  if (req.session.user.type !== "admin") {
+    return res.status(403).json({ success: false });
+  }
+
+  try {
+    await Listing.findByIdAndUpdate(listingId, { status: 'active' });
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ success: false });
+  }
+});
+
 
 app.post('/bid/:id', requireLogin, async (req, res) => {
   const listingId = req.params.id;
