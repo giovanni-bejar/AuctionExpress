@@ -1,4 +1,4 @@
-*The website is currently running at https://taltino.com/ or http://3.142.35.135/ (NOT SECURE MESSAGE)*
+*The website is currently running at https://taltino.com/ (temporary domain name)*
 
 # AuctionExpress
 AuctionExpress is an online auction platform hosted on AWS EC2 with Ubuntu. It's powered by Node.js, features a user-friendly interface built with Tailwind CSS, uses MongoDB for data storage, 
@@ -17,7 +17,7 @@ and relies on AWS S3 for file management. The platform also integrates Stripe fo
 - Apache
 
 # Upcoming Changes
-- SSL Certificate, to make website secure.
+- ~~SSL Certificate, to make website secure.~~
 - Admin Dashboard, to view all website data, manage users and listings.
-- Improvemnts to overall website design using Tailwind CSS.
+- Improvements to overall website design using Tailwind CSS.
 - Improve mobile design of the website.
