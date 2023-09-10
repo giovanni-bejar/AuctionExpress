@@ -1,4 +1,4 @@
-#*The website is currently donw for maintenance*
+*The website is currently donw for maintenance*
 
 # AuctionExpress
 AuctionExpress is an online auction platform hosted on AWS EC2 with Ubuntu. It's powered by Node.js, features a user-friendly interface built with Tailwind CSS, uses MongoDB for data storage, 
